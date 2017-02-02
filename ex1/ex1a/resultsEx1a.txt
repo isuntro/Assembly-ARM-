@@ -1,0 +1,127 @@
+r flag
+f flag
+File Start
+#!/bin/bash
+# This script will run a given program and print
+# to standard out any given files
+# it accepts flags r and f
+# -r : a command
+# -f : list of files to be printed separated by a space
+
+# getops reads comandline arguments
+while getopts "r:f:" opt;do
+    case $opt in
+        r)
+            echo "r flag">&2
+            execute=$OPTARG
+            ;;
+        \?) #unknow flag
+            echo "unknown flag : -$OPTARG">&2
+            ;;
+        :)  #no flag
+            echo "no flag : -$OPTARG">&2
+            ;;
+        f)  #print given files
+            echo "f flag">&2
+			echo "File Start"
+            cat $OPTARG
+			echo "File End"
+            ;;
+    esac
+done
+
+make clean
+# make project
+make mywc
+# run executable
+eval $execute
+/************************************************************
+ * filename: mywc.c
+ *
+ * A naive implementation of wc.c
+ *
+ * Version: 1.0
+ * Author: Mark Fisher, CMP, UEA
+ * Date: 03 Nov. 2016
+ *
+ ************************************************************/
+
+#include <stdio.h>
+
+int main()
+{
+  int ch;
+  int linecount = 0;
+  int wordcount = 0;
+  int charcount = 0;
+  int flag = 0;
+
+  //Repeat until End Of File character is reached
+  while ((ch = getchar()) != EOF) {
+    // Increment character count if NOT new line or space
+    if ((ch != ' ') && (ch != '\n')) {
+      charcount++;
+      flag = 0;
+    }
+    else {
+      if (flag==0) {
+        wordcount++;
+        flag = 1;
+      }
+      charcount++;
+    }
+
+    // Increment line count if new line character
+    if (ch == '\n') { linecount++; }
+
+  }
+
+  if (flag==0) wordcount++;
+
+  printf(" %d %d %d\n", linecount, wordcount, charcount);
+
+  getchar(); // consume EOF
+
+  return(0);
+}
+
+# make clean - removes all .o and executable files
+# Select Compiler
+CC = gcc
+
+# compiler flags:
+CFLAGS = -g -Wall
+
+# All the source Files
+SRCS = mywc.c
+
+# ALL object source files from SRCS
+OBJS = $(SRCS:.c=.o)
+
+# dependencies from objs
+-include $(OBJS:.o=.d)
+
+# command makes makefile ignore any 
+# files named clean 
+.PHONY: clean
+
+# executable file
+EXEC = mywc
+
+ALL: $(EXEC)
+#link files
+$(EXEC): $(OBJS)
+		$(CC) $(CFLAGS) -o $(EXEC) $(OBJS)
+#Compile Files
+.c.o:
+		$(CC) $(CFLAGS) -c $< -o $@
+		$(CC) -MM $(CFLAGS) *.c > $*.d
+#Delete .o and exec files
+clean:
+		$(RM) *.o *~ $(EXEC)
+File End
+rm -f *.o *~ mywc
+gcc -g -Wall -c mywc.c -o mywc.o
+gcc -MM -g -Wall *.c > mywc.d
+gcc -g -Wall -o mywc mywc.o
+ 5 12 83
