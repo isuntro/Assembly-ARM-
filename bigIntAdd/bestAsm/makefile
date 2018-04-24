@@ -1,5 +1,6 @@
-# make clean - removes all .o and executable files
+# Author Tiberiu Simion Voicu
 # Select Compiler
+
 CC = gcc
 
 # compiler flags:

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author Tiberiu Simion Voicu
 # This script will run a given program and print
 # to standard out any given files
 # it accepts flags r and f
